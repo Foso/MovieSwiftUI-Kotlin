@@ -1,9 +1,13 @@
-# MovieSwiftUI
+# MovieSwiftUI-Kotlin
+
+*****
+Fork of MovieSwiftUI using ReduxKotlin.  Code ported to Kotlin includes: entire flux directory(models, actions, async actions, reducers), APIService, AppUserDefaults, and some Props & Mappers.  No Android implementation at this point, although a Jetpack Compose implementation would be interesting once it matures.  
+*****
 
 MovieSwiftUI is an application that uses the MovieDB API and is built with SwiftUI. 
 It demos some SwiftUI (& Combine) concepts. The goal is to make a real world application using SwiftUI only. It'll be updated with new features as they come to the SwiftUI framework. 
 
-![App Image](images/MovieSwiftUI_promo_new.png?)
+![App Image](iOS/MovieSwiftUI/images/MovieSwiftUI_promo_new.png?)
 
 ## Architecture
 
