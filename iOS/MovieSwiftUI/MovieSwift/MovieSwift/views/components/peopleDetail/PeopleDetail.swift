@@ -1,0 +1,216 @@
+//
+//  PeopleDetail.swift
+//  MovieSwift
+//
+//  Created by Thomas Ricouard on 06/07/2019.
+//  Copyright © 2019 Thomas Ricouard. All rights reserved.
+//
+
+import SwiftUI
+import common
+
+struct PeopleDetail: ConnectedView {
+    // MARK: - Props
+    struct Props {
+        let dispatch: DispatchFunction
+        let people: People
+        let movieByYears: [String: [MovieRole]]
+        let isInFanClub: Binding<Bool>
+        let movieScore: Int?
+    }
+    
+    struct MovieRole: Identifiable {
+        let id: String
+        let role: String
+    }
+    
+    let peopleId: String
+    
+    @State var selectedPoster: ImageData?
+    @State var isFanScoreUpdated = false
+    
+    //MARK: - Views
+    private func toggleScoreUpdate() {
+        withAnimation {
+            self.isFanScoreUpdated = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                withAnimation {
+                    self.isFanScoreUpdated = false
+                }
+            }
+        }
+    }
+    
+    private func moviesSection(props: Props, year: String) -> some View {
+        Section(header: Text(year)) {
+            ForEach(props.movieByYears[year]!) { meta in
+                NavigationLink(destination: MovieDetail(movieId: meta.id)) {
+                    PeopleDetailMovieRow(movieId: meta.id, role: meta.role, onMovieContextMenu: {
+                        if props.isInFanClub.value {
+                            self.toggleScoreUpdate()
+                        }
+                    })
+                }
+            }
+        }
+    }
+    
+    private func barbuttons(props: Props) -> some View {
+        Button(action: {
+            props.isInFanClub.value.toggle()
+        }, label: {
+            Image(systemName: props.isInFanClub.value ? "star.circle.fill" : "star.circle")
+                .resizable()
+                .foregroundColor(props.isInFanClub.value ? .steam_gold : .primary)
+                .scaleEffect(props.isInFanClub.value ? 1.2 : 1.0)
+                .frame(width: 25, height: 25)
+                .animation(.spring())
+        })
+    }
+    
+    private func scoreUpdateView(props: Props) -> some View {
+        Group {
+            if isFanScoreUpdated {
+                VStack(spacing: 30) {
+                    Text("Fan level updated!")
+                        .font(.FjallaOne(size: 30))
+                        .foregroundColor(.steam_gold)
+                    PopularityBadge(score: props.movieScore ?? 0)
+                        .scaleEffect(2.0)
+                }
+                .transition(.scale)
+                .animation(Animation
+                    .interpolatingSpring(stiffness: 70, damping: 7)
+                .delay(0.3))
+                .onTapGesture {
+                    self.isFanScoreUpdated = false
+                }
+            }
+        }
+    }
+    
+    private func imagesCarouselView(props: Props) -> some View {
+        Group {
+            if selectedPoster != nil && props.people.images != nil {
+                ImagesCarouselView(posters: props.people.images!,
+                                   selectedPoster: $selectedPoster)
+            }
+        }
+    }
+    
+    func body(props: Props) -> some View {
+        ZStack(alignment: .center) {
+            List {
+                Section {
+                    PeopleDetailHeaderRow(peopleId: peopleId)
+                    if props.people.birthDay != nil ||
+                        props.people.birthDay != nil ||
+                        props.people.place_of_birth != nil ||
+                        props.people.deathDay != nil {
+                        PeopleDetailBiographyRow(biography: props.people.biography,
+                                                 birthDate: props.people.birthDay,
+                                                 deathDate: props.people.deathDay,
+                                                 placeOfBirth: props.people.place_of_birth)
+                    }
+                    if props.isInFanClub.value {
+                        VStack {
+                            Text("Fan level")
+                                .titleStyle()
+                            PopularityBadge(score: props.movieScore ?? 0)
+                        }
+                    }
+                    if props.people.images != nil {
+                        PeopleDetailImagesRow(images: props.people.images!, selectedPoster: $selectedPoster)
+                    }
+                }
+                ForEach(sortedYears(props: props), id: \.self, content: { year in
+                    self.moviesSection(props: props, year: year)
+                })
+            }
+            .blur(radius: selectedPoster != nil || isFanScoreUpdated ? 30 : 0)
+            imagesCarouselView(props: props)
+            scoreUpdateView(props: props)
+        }
+        .navigationBarItems(trailing: barbuttons(props: props))
+        .navigationBarTitle(props.people.name)
+        .onAppear {
+            props.dispatch(peopleActions.fetchDetail(people: self.peopleId))
+            props.dispatch(peopleActions.fetchImages(people: self.peopleId))
+            props.dispatch(peopleActions.fetchPeopleCredits(people: self.peopleId))
+        }
+    }
+}
+
+// MARK: - Map state to props
+extension PeopleDetail {
+    private func sortedYears(props: Props) -> [String] {
+        props.movieByYears.compactMap{ $0.key }.sorted(by: { $0 > $1 })
+    }
+    
+    func map(state: AppState, dispatch: @escaping DispatchFunction) -> Props {
+        var years: [String: [MovieRole]] = [:]
+        var credits: [String: String] = state.peoplesState.crewsByPeopleId(peopleId: peopleId)
+        credits.merge(state.peoplesState.castsByPeopleId(peopleId: peopleId)) { (current, _) in current }
+        for (_, value) in credits.enumerated() {
+            //TODO removed an if let here.  may need to revisit withMovieId() and make it nullable
+            let movie = state.moviesState.withMovieId(movieId: value.key)
+                if movie.release_date != nil && movie.release_date?.isEmpty == false {
+                    let year = String(movie.release_date!.prefix(4))
+                    if years[year] == nil {
+                        years[year] = []
+                    }
+                    years[year]?.append(MovieRole(id: value.key, role: value.value))
+                } else {
+                    if years["Upcoming"] == nil {
+                        years["Upcoming"] = []
+                    }
+                    years["Upcoming"]?.append(MovieRole(id: value.key, role: value.value))
+                }
+            
+        }
+        for value in years {
+            years[value.key] = value.value.sorted(by: { $0.id > $1.id })
+        }
+        
+        let isInFanClub = Binding<Bool>(
+            get: { state.peoplesState.fanClub.contains(self.peopleId) },
+            set: {
+                if !$0 {
+                    dispatch(PeopleActions.RemoveFromFanClub(people: self.peopleId))
+                } else {
+                    dispatch(PeopleActions.AddToFanClub(people: self.peopleId))
+                }
+        }
+        )
+        
+        var movieScore: Int = 0
+        if isInFanClub.value {
+            let roles = years.map{ $0.value }.flatMap{ $0 }.map{ $0.id }
+            let rolesCount = roles.count
+            let userMovies = roles.filter { movie -> Bool in
+                            state.moviesState.seenlist.contains(movie) ||
+                            state.moviesState.wishlist.contains(movie) ||
+                                state.moviesState.customLists.contains{ ($1 as! CustomList).movies.contains(movie) }
+                        }
+            movieScore = userMovies.count > 0 ? Int((Float(userMovies.count) / Float(rolesCount)) * 100) : 0
+        }
+        
+        return Props(dispatch: dispatch,
+                     people: state.peoplesState.withPeopleId(peopleId: peopleId)!,
+                     movieByYears: years,
+                     isInFanClub: isInFanClub,
+                     movieScore: movieScore)
+        
+    }
+    
+}
+
+#if DEBUG
+struct PeopleDetail_Previews : PreviewProvider {
+    static var previews: some View {
+        NavigationView {
+            PeopleDetail(peopleId: CastResponseKt.sampleCasts().first!.id).environmentObject(sampleStore)
+        }
+    }
+}
+#endif

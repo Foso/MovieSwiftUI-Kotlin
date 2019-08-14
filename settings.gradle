@@ -1,0 +1,4 @@
+include ':android', ':common'
+rootProject.name='MovieSwiftUI-Kotlin'
+enableFeaturePreview("GRADLE_METADATA")
+
