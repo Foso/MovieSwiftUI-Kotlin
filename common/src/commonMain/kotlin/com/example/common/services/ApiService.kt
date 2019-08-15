@@ -4,7 +4,7 @@ import com.example.common.actions.MoviesActions
 import com.example.common.actions.PeopleActions
 import com.example.common.getPreferredLanguage
 import com.example.common.models.*
-import com.github.aakira.napier.Napier
+import ru.pocketbyte.hydra.log.HydraLog
 import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
@@ -21,6 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import ru.pocketbyte.hydra.log.info
 import kotlin.coroutines.CoroutineContext
 
 
@@ -131,14 +132,14 @@ class APIService(
         crossinline completionHandler: (Result<T>).() -> Unit
     ) {
         launch {
-            Napier.d("BASE_URL = $baseURL")
+            HydraLog.info("BASE_URL = $baseURL")
             try {
                 val response = client.get<T> {
                     apiUrl(endpoint.path())
                     parameter("api_key", apiKey)
                     parameter("language", getPreferredLanguage())
                     params?.forEach { parameter(it.key, it.value) }
-                    Napier.d("URL: ${url.buildString()}")
+                    HydraLog.info("URL: ${url.buildString()}")
                 }
                 completionHandler(Result.success(response))
             } catch (e: Exception) {

@@ -4,8 +4,9 @@ import com.example.common.models.*
 import com.example.common.services.APIService
 import com.example.common.services.APIService.Endpoint.*
 import com.example.common.thunk
-import com.github.aakira.napier.Napier
+import ru.pocketbyte.hydra.log.HydraLog
 import kotlinx.serialization.Serializable
+import ru.pocketbyte.hydra.log.info
 
 class PeopleActions(private val apiService: APIService) {
 
@@ -74,7 +75,7 @@ class PeopleActions(private val apiService: APIService) {
             params = mapOf("page" to "$page", "region" to "us")
         ) {
             onSuccess { dispatch(SetPopular(page = page, response = it)) }
-            onFailure { Napier.d(it.message ?: "error") }
+            onFailure { HydraLog.info(it.message ?: "error") }
         }
     }
 
