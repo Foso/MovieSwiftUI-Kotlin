@@ -7,8 +7,9 @@ import com.example.common.services.APIService
 import com.example.common.services.APIService.*
 import com.example.common.state.MoviesMenu
 import com.example.common.thunk
-import com.github.aakira.napier.Napier
+import ru.pocketbyte.hydra.log.HydraLog
 import kotlinx.serialization.Serializable
+import ru.pocketbyte.hydra.log.info
 
 class MoviesActions(private val apiService: APIService,
                     private val appUserDefaults: AppUserDefaults) {
@@ -31,7 +32,7 @@ class MoviesActions(private val apiService: APIService,
                 )
             }
             onFailure {
-                Napier.d(it.message ?: "Error fetching")
+                HydraLog.info(it.message ?: "Error fetching")
             }
         }
     }
@@ -194,7 +195,7 @@ class MoviesActions(private val apiService: APIService,
     fun fetchGenres() = thunk { dispatch, _, _ ->
         apiService.GET<GenresResponse>(endpoint = Endpoint.genres, params = null) {
             onSuccess { dispatch(SetGenres(genres = it.genres)) }
-            onFailure { Napier.d(it.message ?: "Failure fetching Genres")}
+            onFailure { HydraLog.info(it.message ?: "Failure fetching Genres")}
         }
     }
 

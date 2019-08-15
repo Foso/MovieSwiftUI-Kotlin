@@ -1,15 +1,16 @@
 package com.example.common.middlewares
 
 import com.example.common.state.AppState
-import com.github.aakira.napier.Napier
+import ru.pocketbyte.hydra.log.HydraLog
 import org.reduxkotlin.Middleware
+import ru.pocketbyte.hydra.log.info
 
 val loggingMiddleware: Middleware<AppState> = { store ->
     { next ->
         { action ->
-            Napier.d("***************************************")
-            Napier.d("Action: ${action::class.simpleName}")
-            Napier.d("***************************************")
+            HydraLog.info("***************************************")
+            HydraLog.info("Action: ${action::class.simpleName}")
+            HydraLog.info("***************************************")
             next(action)
         }
     }

@@ -7,7 +7,7 @@ import com.example.common.preferences.AppUserDefaults
 import com.example.common.preferences.settings
 import com.example.common.services.APIService
 import com.github.aakira.napier.DebugAntilog
-import com.github.aakira.napier.Napier
+import ru.pocketbyte.hydra.log.HydraLog
 import kotlinx.coroutines.Dispatchers
 
 val store = createStore()

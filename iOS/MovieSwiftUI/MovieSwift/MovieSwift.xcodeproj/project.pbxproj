@@ -650,10 +650,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 69FFAF9022A99F1200801F3C /* Build configuration list for PBXNativeTarget "MovieSwift" */;
 			buildPhases = (
+				1E2C6D862301B8F900CAEDFB /* ShellScript */,
 				69FFAF7822A99F1100801F3C /* Sources */,
 				69FFAF7922A99F1100801F3C /* Frameworks */,
 				69FFAF7A22A99F1100801F3C /* Resources */,
-				1E2C6D862301B8F900CAEDFB /* ShellScript */,
 				69AB6C1722C3807500076871 /* Embed Frameworks */,
 			);
 			buildRules = (
@@ -963,7 +963,7 @@
 				CURRENT_PROJECT_VERSION = 1250;
 				DERIVE_UIKITFORMAC_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_ASSET_PATHS = "MovieSwift/Preview\\ Content";
-				DEVELOPMENT_TEAM = Z6P74P6T99;
+				DEVELOPMENT_TEAM = 9W3M6638YZ;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$SRCROOT/../../../common/build/xcode-frameworks",
@@ -975,7 +975,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.5;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.thomasricouard.film-o-matic";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.willowtreeapps.film-o-matic";
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = "maccatalyst.com.thomasricouard.film-o-matic";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -998,7 +998,7 @@
 				CURRENT_PROJECT_VERSION = 1250;
 				DERIVE_UIKITFORMAC_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				DEVELOPMENT_ASSET_PATHS = "MovieSwift/Preview\\ Content";
-				DEVELOPMENT_TEAM = Z6P74P6T99;
+				DEVELOPMENT_TEAM = 9W3M6638YZ;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$SRCROOT/../../../common/build/xcode-frameworks",
@@ -1010,7 +1010,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.5;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.thomasricouard.film-o-matic";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.willowtreeapps.film-o-matic";
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = "maccatalyst.com.thomasricouard.film-o-matic";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
