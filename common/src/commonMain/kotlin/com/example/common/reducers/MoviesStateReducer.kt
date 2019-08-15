@@ -45,8 +45,8 @@ fun moviesStateReducer(state: MoviesState, action: Any) : MoviesState {
         }
         is MoviesActions.SetSearchKeyword -> state.searchKeywords[action.query] = action.response.results
         is MoviesActions.AddToWishlist -> {
-            state.wishlist = state.wishlist.minus(action.movie)
-            state.seenlist = state.wishlist.minus(action.movie)
+            state.wishlist = state.wishlist.plus(action.movie)
+            state.seenlist = state.seenlist.minus(action.movie)
             val meta = state.moviesUserMeta[action.movie] ?: MovieUserMeta()
             meta.addedToList = DateTime.now()
             state.moviesUserMeta[action.movie] = meta
