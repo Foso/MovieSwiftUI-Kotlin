@@ -9,12 +9,6 @@
 import SwiftUI
 import common
 
-fileprivate let formatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .medium
-    return formatter
-}()
-
 struct MovieRow: ConnectedView {
     struct Props {
         let movie: Movie
@@ -46,12 +40,10 @@ struct MovieRow: ConnectedView {
                     .lineLimit(2)
                 HStack {
                     PopularityBadge(score: Int(props.movie.vote_average * 10))
-                    /*
-                    Text(formatter.string(from: props.movie.releaseDate ?? Date()))
+                    Text(props.movie.releaseDate)
                         .font(.subheadline)
                         .foregroundColor(.primary)
                         .lineLimit(1)
- */
                 }
                 Text(props.movie.overview)
                     .foregroundColor(.secondary)

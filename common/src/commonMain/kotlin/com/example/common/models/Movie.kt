@@ -32,12 +32,14 @@ data class Movie(
     var department: String? = null
 ) {
     private val dateFormatter: DateFormat by lazy { DateFormat("yyyy-MM-dd") }
+    private val displayDateFormat = "MMM dd, YYYY"
 
     fun userTitle(appUserDefaults: AppUserDefaults): String =
         if (appUserDefaults.alwaysOriginalTitle) original_title else title
 
-    val releaseDate: DateTimeTz
-        get() = if (release_date != null) dateFormatter.parse(release_date!!) else DateTimeTz.nowLocal()
+    //Nov 23, 1937
+    val releaseDate: String
+        get() = if (release_date != null) dateFormatter.parse(release_date).format(displayDateFormat) else DateTimeTz.nowLocal().format(displayDateFormat)
 
     @Serializable
     data class Keywords(val keywords: List<Keyword>? = null)

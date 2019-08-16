@@ -48,17 +48,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     
     func sceneDidEnterBackground(_ scene: UIScene) {
-//        store.state.archiveState()
+        saveState(store.state.getSaveState())
     }
 }
 public typealias DispatchFunction = (Any) -> (Any)
 
-public protocol KotlinConnectView: View {
-    associatedtype State: AnyObject
-       associatedtype Props
-       associatedtype V: View
-    var propsMapper: (State, DispatchFunction) -> Props {get}
-}
 
 public protocol ConnectedView: View {
     associatedtype State: AnyObject
@@ -79,6 +73,7 @@ public extension ConnectedView {
         return StoreConnector(content: render)
     }
 }
+
 public struct StoreConnector<State: AnyObject, V: View>: View {
     @EnvironmentObject var store: ObservableStore<State>
     let content: (State, @escaping (Any) -> ()) -> V
@@ -107,7 +102,19 @@ class ObservableStore<State: AnyObject>: ObservableObject {
             self.store.dispatch(action)
         }
     }
-
+        
+    func sizeOfArchivedState() -> String {
+        do {
+            let resources = try savePath.resourceValues(forKeys:[.fileSizeKey])
+            let formatter = ByteCountFormatter()
+            formatter.allowedUnits = .useKB
+            formatter.countStyle = .file
+            return formatter.string(fromByteCount: Int64(resources.fileSize ?? 0))
+        } catch {
+            return "0"
+        }
+    }
+    
     deinit {
         unsubscribe()
     }
@@ -127,7 +134,42 @@ struct StoreProvider<V: View>: View {
     }
 }
 
-let store = ObservableStore(store: StoreKt.createStore())
+
+fileprivate var savePath: URL!
+
+func initialState() -> AppState {
+    do {
+        let icloudDirectory = FileManager.default.url(forUbiquityContainerIdentifier: nil)
+        let documentDirectory = try FileManager.default.url(for: .documentDirectory,
+                                                            in: .userDomainMask,
+                                                            appropriateFor: nil,
+                                                            create: false)
+        savePath = (icloudDirectory ?? documentDirectory).appendingPathComponent("userData")
+    } catch let error {
+        fatalError("Couldn't create save state data with error: \(error)")
+    }
+    
+    if let data = try? String(contentsOf: savePath, encoding: .utf8) {
+        let savedState = AppState.Companion().decode(jsonStr: data)
+        return savedState
+    } else {
+        return AppState.Companion().initialValue()
+    }
+}
+
+func saveState(_ state: AppState) {
+    guard let data = try? state.getSaveState().encode() else {
+        return
+    }
+    
+    do {
+        try data.write(to: savePath, atomically: true, encoding: String.Encoding.utf8)
+    } catch {
+        print("Error while saving app state :\(error)")
+    }
+}
+
+let store = ObservableStore(store: StoreKt.createStore(initialState: nil))
 let apiService = APIService.init(networkContext: UI())
 let appUserDefaults = AppUserDefaults(settings: SettingsKt.settings(context: nil))
 let movieActions = MoviesActions(apiService: apiService, appUserDefaults: appUserDefaults)

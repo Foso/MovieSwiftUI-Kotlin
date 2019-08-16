@@ -1,7 +1,9 @@
 package com.example.common.state
 
 import com.example.common.models.People
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class PeoplesState(
     var peoples: MutableMap<String, People> = mutableMapOf(),
     var peoplesMovies: MutableMap<String, List<String>> = mutableMapOf(),
@@ -37,4 +39,5 @@ data class PeoplesState(
     val credits
         get() = peoples.values.filter { it.department != null }
 
+    fun getSaveState() = copy(peoples = peoples.filter { fanClub.contains(it.key) }.toMutableMap() )
 }
