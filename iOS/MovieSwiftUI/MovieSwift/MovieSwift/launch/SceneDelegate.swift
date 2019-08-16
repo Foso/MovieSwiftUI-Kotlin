@@ -176,7 +176,8 @@ fileprivate func saveState(_ state: AppState) {
 }
 
 let store = ObservableStore(store: StoreKt.createStore(initialState: initialState()))
-let apiService = APIService.init(networkContext: UI())
+//passing UI dispatcher until Kotlin Native has support for multithreaded coroutines
+let apiService = APIService.init(networkContext: UI(), uiContext: UI())
 let appUserDefaults = AppUserDefaults(settings: SettingsKt.settings(context: nil))
 let movieActions = MoviesActions(apiService: apiService, appUserDefaults: appUserDefaults)
 let peopleActions = PeopleActions(apiService: apiService)

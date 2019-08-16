@@ -12,7 +12,7 @@ interface PaginatedResponse<T> {
 
 @Serializable
 data class MoviePaginatedResponse(
-    override val page: Int,
+    override val page: Int?,
     override val total_results: Int?,
     override val total_pages: Int?,
     override val results: List<Movie>
@@ -20,7 +20,7 @@ data class MoviePaginatedResponse(
 
 @Serializable
 data class GenrePaginatedResponse(
-    override val page: Int,
+    override val page: Int?,
     override val total_results: Int?,
     override val total_pages: Int?,
     override val results: List<Genre>
@@ -28,7 +28,7 @@ data class GenrePaginatedResponse(
 
 @Serializable
 data class PeoplePaginatedResponse(
-    override val page: Int,
+    override val page: Int?,
     override val total_results: Int?,
     override val total_pages: Int?,
     override val results: List<People>
@@ -36,7 +36,7 @@ data class PeoplePaginatedResponse(
 
 @Serializable
 data class ReviewPaginatedResponse(
-    override val page: Int,
+    override val page: Int?,
     override val total_results: Int?,
     override val total_pages: Int?,
     override val results: List<Review>
@@ -44,7 +44,7 @@ data class ReviewPaginatedResponse(
 
 @Serializable
 data class KeywordPaginatedResponse(
-    override val page: Int,
+    override val page: Int?,
     override val total_results: Int?,
     override val total_pages: Int?,
     override val results: List<Keyword>

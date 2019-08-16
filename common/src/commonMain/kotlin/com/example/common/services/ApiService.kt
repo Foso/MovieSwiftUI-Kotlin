@@ -26,14 +26,15 @@ import kotlin.coroutines.CoroutineContext
 
 
 class APIService(
-    private val networkContext: CoroutineContext
+    private val networkContext: CoroutineContext,
+    private val uiContext: CoroutineContext
 ): CoroutineScope {
     val baseURL: String = "https://api.themoviedb.org/3"
     val apiKey: String = "1d9b898a212ea52e283351e521e17871"
     private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = networkContext + job
-
+    val uiScope: CoroutineScope = CoroutineScope(coroutineContext)
     sealed class APIError : Error() {
         object noResponse : APIError()
         data class jsonDecodingError(val error: Error) : APIError()
@@ -141,7 +142,9 @@ class APIService(
                     params?.forEach { parameter(it.key, it.value) }
                     HydraLog.info("URL: ${url.buildString()}")
                 }
-                completionHandler(Result.success(response))
+//                uiScope.launch {
+                    completionHandler(Result.success(response))
+//                }
             } catch (e: Exception) {
                 //TODO return appropriate APIErrors
                 completionHandler(Result.failure(e))
