@@ -6,6 +6,8 @@
   * **APIService**
   * **AppUserDefaults**
   * **some Props & Mappers**
+  * **save/restore state logic & serialization (saving as JSON string - custom Codable implementation may be a better solution**
+  * **date formatting**
   
 **No Android implementation at this point, although a Jetpack Compose implementation would be interesting once it matures.**  
 *****
