@@ -13,8 +13,8 @@ import org.reduxkotlin.applyMiddleware
 import org.reduxkotlin.createStore
 import org.reduxkotlin.createThunkMiddleware
 
-fun createStore() = createStore(
-    ::appStateReducer, AppState(), applyMiddleware(
+fun createStore(initialState: AppState? = null) = createStore(
+    ::appStateReducer, initialState ?: AppState(), applyMiddleware(
         createThunkMiddleware(),
         loggingMiddleware
     )

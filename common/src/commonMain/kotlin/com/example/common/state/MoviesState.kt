@@ -1,7 +1,9 @@
 package com.example.common.state
 
 import com.example.common.models.*
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class MoviesState(
     var movies: MutableMap<String, Movie> = mutableMapOf(),
     var moviesList: MutableMap<MoviesMenu, List<String>> = mutableMapOf(),
@@ -62,4 +64,12 @@ data class MoviesState(
     fun recommendedMovies(movieId: String): List<Movie>? = recommended[movieId]?.filter { movies.containsKey(it) }?.mapNotNull { movies[it] }
 
     fun similarMovies(movieId: String): List<Movie>? = similar[movieId]?.filter { movies.containsKey(it) }?.mapNotNull { movies[it] }
+
+    fun getMoviesToSave() = movies.filter { shouldSaveMovie(it.value.id) }.toMutableMap()
+
+    fun getSaveState() = MoviesState(movies = getMoviesToSave(), seenlist = seenlist, wishlist = wishlist, customLists = customLists)
+
+    private fun shouldSaveMovie(movieId: String): Boolean = seenlist.contains(movieId)
+            || wishlist.contains(movieId)
+            || customLists.any { it.value.movies.contains(movieId) || it.value.cover == movieId }
 }

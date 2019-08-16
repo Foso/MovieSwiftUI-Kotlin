@@ -16,7 +16,7 @@ struct MyLists : ConnectedView {
     typealias Props = MyListsProps
     // MARK: - Vars
     @EnvironmentObject private var store: ObservableStore<AppState>
-    @State private var selectedList: String = "0"
+    @State private var selectedList: Int = 0
     @State private var selectedMoviesSort = MoviesSort.byreleasedate
     @State private var isSortActionSheetPresented = false
     @State private var isEditingFormPresented = false
@@ -90,11 +90,11 @@ struct MyLists : ConnectedView {
                 Picker(selection: $selectedList, label: Text("")) {
                     Text("Wishlist").tag(0)
                     Text("Seenlist").tag(1)
-                }//.pickerStyle(SegmentedPickerStyle())
+                }.pickerStyle(SegmentedPickerStyle())
                 
-                if selectedList == "0" {
+                if selectedList == 0 {
                     wishlistSection(props: props)
-                } else if selectedList == "1" {
+                } else if selectedList == 1 {
                     seenSection(props: props)
                 }
             }
