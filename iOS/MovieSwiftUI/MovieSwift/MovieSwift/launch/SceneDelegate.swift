@@ -137,7 +137,10 @@ struct StoreProvider<V: View>: View {
 
 fileprivate var savePath: URL!
 
-func initialState() -> AppState {
+/**
+   Loads an initial state from disk or iCloud.  State is saved as a json string.
+*/
+fileprivate func initialState() -> AppState {
     do {
         let icloudDirectory = FileManager.default.url(forUbiquityContainerIdentifier: nil)
         let documentDirectory = try FileManager.default.url(for: .documentDirectory,
@@ -157,7 +160,10 @@ func initialState() -> AppState {
     }
 }
 
-func saveState(_ state: AppState) {
+/**
+   Saves state as a json string to a file
+ */
+fileprivate func saveState(_ state: AppState) {
     guard let data = try? state.getSaveState().encode() else {
         return
     }
@@ -169,7 +175,7 @@ func saveState(_ state: AppState) {
     }
 }
 
-let store = ObservableStore(store: StoreKt.createStore(initialState: nil))
+let store = ObservableStore(store: StoreKt.createStore(initialState: initialState()))
 let apiService = APIService.init(networkContext: UI())
 let appUserDefaults = AppUserDefaults(settings: SettingsKt.settings(context: nil))
 let movieActions = MoviesActions(apiService: apiService, appUserDefaults: appUserDefaults)
