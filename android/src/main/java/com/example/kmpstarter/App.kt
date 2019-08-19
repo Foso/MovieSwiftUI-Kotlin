@@ -23,6 +23,8 @@ class App: Application() {
         if (!BuildConfig.DEBUG) {
             // No need to write debug logs in production build
             HydraLog.initDefault(LogLevel.INFO)
+        } else {
+            HydraLog.initDefault(LogLevel.DEBUG)
         }
         appUserDefaults = AppUserDefaults(settings(this))
         movieActions = MoviesActions(apiService, appUserDefaults)
