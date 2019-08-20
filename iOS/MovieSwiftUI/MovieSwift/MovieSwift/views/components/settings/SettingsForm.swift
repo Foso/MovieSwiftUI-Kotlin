@@ -74,14 +74,14 @@ struct SettingsForm : View {
             }
             .navigationBarItems(
                 leading: Button(action: {
-                    self.presentationMode.value.dismiss()
+                    self.presentationMode.wrappedValue.dismiss()
                 }, label: {
                     Text("Cancel").foregroundColor(.red)
                 }),
                 trailing: Button(action: {
                     appUserDefaults.region = NSLocale.isoCountryCodes[self.selectedRegion]
                     appUserDefaults.alwaysOriginalTitle = self.alwaysOriginalTitle
-                    self.presentationMode.value.dismiss()
+                    self.presentationMode.wrappedValue.dismiss()
                 }, label: {
                     Text("Save")
                 }))

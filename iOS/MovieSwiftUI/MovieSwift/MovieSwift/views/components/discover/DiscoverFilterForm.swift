@@ -113,7 +113,7 @@ struct DiscoverFilterForm : View {
         Group {
             Section {
                 Button(action: {
-                    self.presentationMode.value.dismiss()
+                    self.presentationMode.wrappedValue.dismiss()
                     if let toSave = self.formFilter {
                         self.store.dispatch(MoviesActions.SaveDiscoverFilter(filter: toSave))
                     }
@@ -125,7 +125,7 @@ struct DiscoverFilterForm : View {
                 })
                 
                 Button(action: {
-                    self.presentationMode.value.dismiss()
+                    self.presentationMode.wrappedValue.dismiss()
                 }, label: {
                     Text("Cancel").foregroundColor(.red)
                 })
@@ -136,7 +136,7 @@ struct DiscoverFilterForm : View {
                     self.selectedCountry = 0
                     self.selectedDate = 0
                     self.selectedGenre = 0
-                    self.presentationMode.value.dismiss()
+                    self.presentationMode.wrappedValue.dismiss()
                     self.store.dispatch(MoviesActions.ResetRandomDiscover())
                     self.store.dispatch(movieActions.fetchRandomDiscover(filter: nil))
                 }, label: {
@@ -153,7 +153,7 @@ struct DiscoverFilterForm : View {
                     ForEach(0 ..< self.savedFilters.count) { index in
                         Text(self.savedFilters[index].toText(genres: self.store.state.moviesState.genres as! [Genre])) //TODO fix this
                             .onTapGesture {
-                                self.presentationMode.value.dismiss()
+                                self.presentationMode.wrappedValue.dismiss()
                                 self.store.dispatch(MoviesActions.ResetRandomDiscover())
                                 self.store.dispatch(movieActions.fetchRandomDiscover(filter: self.savedFilters[index]))
                         }

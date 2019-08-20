@@ -20,6 +20,8 @@ import androidx.ui.graphics.ColorSpace
 import androidx.ui.layout.*
 import androidx.ui.material.*
 import androidx.ui.painting.*
+import androidx.ui.text.ParagraphStyle
+import androidx.ui.text.style.TextAlign
 import coil.Coil
 import coil.api.get
 import com.example.common.helloWordText
@@ -109,13 +111,30 @@ fun Item(movie: Movie) {
             }
         }
     }
-    val textStyle = +themeTextStyle { body1 }
-    Row(crossAxisAlignment = CrossAxisAlignment.Center) {
+    val textStyle = +themeTextStyle { h6 }
+    FlexRow(crossAxisAlignment = CrossAxisAlignment.Stretch) {
         if (image.value != null) {
             SimpleImage(AndroidImage((image.value!! as BitmapDrawable).bitmap))
         }
-        Text(text = movie.title, style = textStyle)
+
+        Column {
+            Text(
+                text = movie.title,
+                style = textStyle,
+                maxLines = 2,
+                paragraphStyle = ParagraphStyle(textAlign = TextAlign.Start)
+            )
+
+            Padding(padding = 8.dp) {
+                Text(text = movie.overview,
+                    maxLines = 5,
+                    paragraphStyle = ParagraphStyle(textAlign = TextAlign.Start),
+                    softWrap = true,
+                    style = +themeTextStyle { body1 })
+            }
+        }
     }
+
 }
 
 private val ItemSize = 55.dp
